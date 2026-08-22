@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Safe Speak | Anonymous Multilingual Support</title>
+
+<style>
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #10b981;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --chat-bg: #f1f5f9;
+}
+
+body.dark {
+    --bg: #0f172a;
+    --card: #1e293b;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --border: #334155;
+    --chat-bg: #111827;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    transition: 0.3s;
+}
+
+.container {
+    width: min(1200px, 92%);
+    margin: auto;
+}
+
+button,
+select,
+input,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* ================= HEADER ================= */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+}
+
+.nav {
+    min-height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+select,
+.small-btn {
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+    padding: 9px 12px;
+    border-radius: 8px;
+}
+
+/* ================= BUTTONS ================= */
+
+.btn {
+    border: none;
+    border-radius: 9px;
+    padding: 12px 20px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+}
+
+/* ================= HERO ================= */
+
+.hero {
+    padding: 110px 20px;
+    text-align: center;
+    background:
+        radial-gradient(circle at top left, #dbeafe, transparent 35%),
+        radial-gradient(circle at bottom right, #d1fae5, transparent 35%);
+}
+
+body.dark .hero {
+    background:
+        radial-gradient(circle at top left, #172554, transparent 35%),
+        radial-gradient(circle at bottom right, #064e3b, transparent 35%);
+}
+
+.hero h1 {
+    font-size: clamp(2.3rem, 6vw, 4rem);
+    margin-bottom: 20px;
+}
+
+.hero p {
+    max-width: 750px;
+    margin: auto;
+    color: var(--muted);
+    font-size: 1.15rem;
+}
+
+.hero-buttons {
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ================= SECTIONS ================= */
+
+section {
+    padding: 80px 0;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.3rem;
+    color: var(--primary);
+    margin-bottom: 45px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 25px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 28px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h3 {
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.card p {
+    color: var(--muted);
+}
+
+/* ================= SAFETY ================= */
+
+.safety {
+    background: #fff7ed;
+}
+
+body.dark .safety {
+    background: #2b1605;
+}
+
+.safety-box {
+    max-width: 850px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #fed7aa;
+}
+
+.safety-box h3 {
+    color: var(--danger);
+    margin-bottom: 15px;
+}
+
+.safety-box ul {
+    padding-left: 20px;
+}
+
+/* ================= CHAT MODAL ================= */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.chat-container {
+    width: min(600px, 100%);
+    height: min(750px, 92vh);
+    background: var(--card);
+    border-radius: 18px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.chat-header {
+    background: var(--primary);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-title {
+    font-weight: bold;
+}
+
+.chat-subtitle {
+    font-size: 0.75rem;
+    opacity: 0.85;
+}
+
+.chat-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.icon-btn {
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.chat-info {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: var(--muted);
+}
+
+.online {
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+.chat-box {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--chat-bg);
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.message {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 15px;
+    word-wrap: break-word;
+}
+
+.received {
+    align-self: flex-start;
+    background: var(--card);
+    border-bottom-left-radius: 3px;
+}
+
+.sent {
+    align-self: flex-end;
+    background: var(--primary);
+    color: white;
+    border-bottom-right-radius: 3px;
+}
+
+.system {
+    align-self: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+.warning {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.message-meta {
+    display: block;
+    font-size: 0.65rem;
+    opacity: 0.65;
+    margin-top: 4px;
+}
+
+/* ================= TYPING ================= */
+
+.typing {
+    display: none;
+    padding: 0 18px 8px;
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+/* ================= INPUT ================= */
+
+.input-area {
+    background: var(--card);
+    border-top: 1px solid var(--border);
+    padding: 12px;
+}
+
+.input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.input-row input {
+    flex: 1;
+    min-width: 0;
+    padding: 13px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    outline: none;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.input-row input:focus {
+    border-color: var(--primary);
+}
+
+.char-count {
+    text-align: right;
+    color: var(--muted);
+    font-size: 0.7rem;
+    margin-top: 5px;
+}
+
+/* ================= MODALS ================= */
+
+.dialog {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.dialog.show {
+    display: flex;
+}
+
+.dialog-card {
+    width: min(450px, 100%);
+    background: var(--card);
+    color: var(--text);
+    padding: 25px;
+    border-radius: 15px;
+}
+
+.dialog-card h3 {
+    margin-bottom: 15px;
+}
+
+.dialog-card textarea {
+    width: 100%;
+    height: 120px;
+    resize: none;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* ================= FOOTER ================= */
+
+footer {
+    padding: 45px 20px;
+    text-align: center;
+    background: #0f172a;
+    color: white;
+}
+
+footer p {
+    color: #94a3b8;
+    margin: 8px;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 600px) {
+
+    .nav {
+        flex-direction: column;
+        padding: 12px 0;
+    }
+
+    .nav-actions {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hero {
+        padding: 80px 15px;
+    }
+
+    section {
+        padding: 55px 0;
+    }
+
+    .message {
+        max-width: 90%;
+    }
+
+    .chat-container {
+        height: 95vh;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header>
+    <div class="container nav">
+
+        <div class="logo">
+            🌐 Safe Speak
+        </div>
+
+        <div class="nav-actions">
+
+            <select id="language">
+                <option value="en">English</option>
+                <option value="te">తెలుగు</option>
+                <option value="hi">हिंदी</option>
+                <option value="ta">தமிழ்</option>
+            </select>
+
+            <button class="small-btn" id="themeBtn">
+                🌙
+            </button>
+
+            <button class="btn btn-primary" id="openChat">
+                Join Chat
+            </button>
+
+        </div>
+    </div>
+</header>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="container">
+
+        <h1 id="heroTitle">
+            Speak Freely. Connect Safely.
+        </h1>
+
+        <p id="heroText">
+            An anonymous multilingual platform where people can talk,
+            listen and connect without fear of judgment.
+        </p>
+
+        <div class="hero-buttons">
+
+            <button class="btn btn-primary" id="heroChat">
+                💬 Start Chatting Anonymously
+            </button>
+
+            <a href="#features" class="btn btn-outline">
+                Learn More
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FEATURES ================= -->
+
+<section id="features">
+
+    <div class="container">
+
+        <h2 class="section-title">
+            Our Features
+        </h2>
+
+        <div class="grid">
+
+            <div class="card">
+                <h3>🛡️ Anonymous</h3>
+                <p>
+                    No public names, profile pictures or unnecessary
+                    personal information.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🌍 Multilingual</h3>
+                <p>
+                    Support conversations in English, Telugu,
+                    Hindi and Tamil.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🔒 Safety Checks</h3>
+                <p>
+                    Messages can be checked for abusive or dangerous
+                    language before continuing.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🚨 Crisis Detection</h3>
+                <p>
+                    Potential crisis messages can trigger an
+                    immediate safety notice.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🚫 Block & Report</h3>
+                <p>
+                    Users can report inappropriate behavior and
+                    block another participant.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🌙 Dark Mode</h3>
+                <p>
+                    Switch between light and dark themes for a
+                    comfortable experience.
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= SAFETY ================= -->
+
+<section class="safety">
+
+    <div class="container">
+
+        <div class="safety-box">
+
+            <h3>🚨 Safety First</h3>
+
+            <p>
+                Safe Speak is designed as a peer-support platform.
+                It is not a replacement for professional medical,
+                psychological or emergency services.
+            </p>
+
+            <br>
+
+            <ul>
+                <li>Do not share passwords or financial information.</li>
+                <li>Do not share your home address.</li>
+                <li>Report threatening or abusive behavior.</li>
+                <li>Seek professional help when necessary.</li>
+            </ul>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CHAT MODAL ================= -->
+
+<div class="modal" id="chatModal">
+
+    <div class="chat-container">
+
+        <!-- CHAT HEADER -->
+
+        <div class="chat-header">
+
+            <div>
+
+                <div class="chat-title">
+                    💬 Anonymous Chat
+                </div>
+
+                <div class="chat-subtitle">
+                    Your personal identity is not displayed
+                </div>
+
+            </div>
+
+            <div class="chat-actions">
+
+                <button class="icon-btn" id="reportBtn">
+                    ⚠️
+                </button>
+
+                <button class="icon-btn" id="blockBtn">
+                    🚫
+                </button>
+
+                <button class="icon-btn" id="closeChat">
+                    ✕
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- CHAT INFO -->
+
+        <div class="chat-info">
+
+            <span>
+                Session:
+                <strong id="sessionId"></strong>
+            </span>
+
+            <span class="online">
+                ● Online
+            </span>
+
+        </div>
+
+
+        <!-- CHAT -->
+
+        <div class="chat-box" id="chatBox">
+
+            <div class="system">
+                🔐 Secure anonymous session started.
+            </div>
+
+            <div class="message received">
+
+                Hello! 👋
+
+                <br><br>
+
+                I'm here to listen.
+                You can share what's on your mind.
+
+                <span class="message-meta">
+                    Safe Speak • Now
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- TYPING -->
+
+        <div class="typing" id="typing">
+            Anonymous peer is typing...
+        </div>
+
+
+        <!-- INPUT -->
+
+        <div class="input-area">
+
+            <div class="input-row">
+
+                <input
+                    id="messageInput"
+                    type="text"
+                    maxlength="500"
+                    placeholder="Type your message..."
+                >
+
+                <button
+                    class="btn btn-primary"
+                    id="sendBtn"
+                >
+                    Send
+                </button>
+
+            </div>
+
+            <div class="char-count">
+                <span id="charCount">0</span>/500
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= REPORT DIALOG ================= -->
+
+<div class="dialog" id="reportDialog">
+
+    <div class="dialog-card">
+
+        <h3>⚠️ Report User</h3>
+
+        <p>
+            Tell us why you are reporting this conversation.
+        </p>
+
+        <br>
+
+        <textarea
+            id="reportReason"
+            placeholder="Describe the problem..."
+        ></textarea>
+
+        <div class="dialog-buttons">
+
+            <button
+                class="btn btn-primary"
+                id="submitReport"
+            >
+                Submit Report
+            </button>
+
+            <button
+                class="btn btn-outline"
+                id="cancelReport"
+            >
+                Cancel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <h3>🌐 Safe Speak</h3>
+
+    <p>
+        Speak freely. Connect safely.
+    </p>
+
+    <p>
+        © 2026 Safe Speak. All rights reserved.
+    </p>
+
+</footer>
+
+
+<script>
+
+/* =====================================================
+   ANONYMOUS SESSION
+===================================================== */
+
+function createSessionId() {
+
+    const existing = localStorage.getItem("safeSpeakSession");
+
+    if (existing) {
+        return existing;
+    }
+
+    const id =
+        "SS-" +
+        Math.random()
+            .toString(36)
+            .substring(2, 8)
+            .toUpperCase();
+
+    localStorage.setItem("safeSpeakSession", id);
+
+    return id;
+}
+
+document.getElementById("sessionId").textContent =
+    createSessionId();
+
+
+/* =====================================================
+   CHAT
+===================================================== */
+
+const chatModal =
+    document.getElementById("chatModal");
+
+const openChat =
+    document.getElementById("openChat");
+
+const heroChat =
+    document.getElementById("heroChat");
+
+const closeChat =
+    document.getElementById("closeChat");
+
+const sendBtn =
+    document.getElementById("sendBtn");
+
+const messageInput =
+    document.getElementById("messageInput");
+
+const chatBox =
+    document.getElementById("chatBox");
+
+const typing =
+    document.getElementById("typing");
+
+
+function showChat() {
+
+    chatModal.classList.add("show");
+
+    setTimeout(() => {
+        messageInput.focus();
+    }, 200);
+}
+
+
+openChat.addEventListener("click", showChat);
+
+heroChat.addEventListener("click", showChat);
+
+
+closeChat.addEventListener("click", () => {
+
+    chatModal.classList.remove("show");
+
+});
+
+
+chatModal.addEventListener("click", (event) => {
+
+    if (event.target === chatModal) {
+        chatModal.classList.remove("show");
+    }
+
+});
+
+
+/* =====================================================
+   SAFETY MODERATION
+===================================================== */
+
+const abusiveWords = [
+    "idiot",
+    "stupid",
+    "loser",
+    "ugly",
+    "hate you",
+    "shut up"
+];
+
+const crisisWords = [
+    "suicide",
+    "kill myself",
+    "hurt myself",
+    "end my life",
+    "want to die"
+];
+
+
+function containsWords(text, words) {
+
+    const lower = text.toLowerCase();
+
+    return words.some(word =>
+        lower.includes(word)
+    );
+
+}
+
+
+/* =====================================================
+   ADD MESSAGE
+===================================================== */
+
+function addMessage(text, type) {
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message " + type;
+
+    const messageText =
+        document.createElement("span");
+
+    messageText.textContent = text;
+
+    const meta =
+        document.createElement("span");
+
+    meta.className = "message-meta";
+
+    meta.textContent =
+        "Anonymous • " +
+        new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+    message.appendChild(messageText);
+    message.appendChild(meta);
+
+    chatBox.appendChild(message);
+
+    chatBox.scrollTop =
+        chatBox.scrollHeight;
+}
+
+
+/* =====================================================
+   SYSTEM MESSAGE
+===================================================== */
+
+function addSystemMessage(text, warning = false) {
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        warning
+            ? "message system warning"
+            : "system";
+
+    message.textContent = text;
+
+    chatBox.appendChild(message);
+
+    chatBox.scrollTop =
+        chatBox.scrollHeight;
+}
+
+
+/* =====================================================
+   SEND MESSAGE
+===================================================== */
+
+function sendMessage() {
+
+    const text =
+        messageInput.value.trim();
+
+    if (!text) return;
+
+
+    /* Crisis */
+
+    if (containsWords(text, crisisWords)) {
+
+        addMessage(text, "sent");
+
+        messageInput.value = "";
+
+        updateCounter();
+
+        setTimeout(() => {
+
+            addSystemMessage(
+                "🚨 If you may be in immediate danger, contact local emergency services or a qualified crisis professional.",
+                true
+            );
+
+        }, 400);
+
+        return;
+    }
+
+
+    /* Abuse */
+
+    if (containsWords(text, abusiveWords)) {
+
+        addSystemMessage(
+            "⚠️ This message was blocked because it may violate the community safety rules.",
+            true
+        );
+
+        messageInput.value = "";
+
+        updateCounter();
+
+        return;
+    }
+
+
+    /* Normal message */
+
+    addMessage(text, "sent");
+
+    messageInput.value = "";
+
+    updateCounter();
+
+
+    /* Simulated peer response */
+
+    typing.style.display = "block";
+
+    setTimeout(() => {
+
+        typing.style.display = "none";
+
+        addMessage(
+            "I hear you. Thank you for sharing that. You are welcome to talk here.",
+            "received"
+        );
+
+    }, 1800);
+
+}
+
+
+sendBtn.addEventListener(
+    "click",
+    sendMessage
+);
+
+
+messageInput.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key === "Enter") {
+            sendMessage();
+        }
+
+    }
+);
+
+
+/* =====================================================
+   CHARACTER COUNTER
+===================================================== */
+
+function updateCounter() {
+
+    document.getElementById("charCount")
+        .textContent =
+        messageInput.value.length;
+
+}
+
+messageInput.addEventListener(
+    "input",
+    updateCounter
+);
+
+
+/* =====================================================
+   DARK MODE
+===================================================== */
+
+const themeBtn =
+    document.getElementById("themeBtn");
+
+
+function updateThemeIcon() {
+
+    themeBtn.textContent =
+        document.body.classList.contains("dark")
+            ? "☀️"
+            : "🌙";
+
+}
+
+
+themeBtn.addEventListener(
+    "click",
+    () => {
+
+        document.body.classList.toggle("dark");
+
+        localStorage.setItem(
+            "safeSpeakDarkMode",
+            document.body.classList.contains("dark")
+        );
+
+        updateThemeIcon();
+
+    }
+);
+
+
+if (
+    localStorage.getItem("safeSpeakDarkMode")
+    === "true"
+) {
+
+    document.body.classList.add("dark");
+
+}
+
+updateThemeIcon();
+
+
+/* =====================================================
+   REPORT USER
+===================================================== */
+
+const reportBtn =
+    document.getElementById("reportBtn");
+
+const reportDialog =
+    document.getElementById("reportDialog");
+
+const cancelReport =
+    document.getElementById("cancelReport");
+
+const submitReport =
+    document.getElementById("submitReport");
+
+
+reportBtn.addEventListener(
+    "click",
+    () => {
+
+        reportDialog.classList.add("show");
+
+    }
+);
+
+
+cancelReport.addEventListener(
+    "click",
+    () => {
+
+        reportDialog.classList.remove("show");
+
+    }
+);
+
+
+submitReport.addEventListener(
+    "click",
+    () => {
+
+        const reason =
+            document.getElementById(
+                "reportReason"
+            ).value.trim();
+
+        if (!reason) {
+
+            alert(
+                "Please enter a reason for the report."
+            );
+
+            return;
+        }
+
+        reportDialog.classList.remove("show");
+
+        document.getElementById(
+            "reportReason"
+        ).value = "";
+
+        addSystemMessage(
+            "✅ Report submitted. Thank you for helping keep Safe Speak safe."
+        );
+
+    }
+);
+
+
+/* =====================================================
+   BLOCK USER
+===================================================== */
+
+document.getElementById("blockBtn")
+    .addEventListener(
+        "click",
+        () => {
+
+            const confirmed =
+                confirm(
+                    "Block this anonymous user?"
+                );
+
+            if (!confirmed) return;
+
+            addSystemMessage(
+                "🚫 This user has been blocked for this session."
+            );
+
+        }
+    );
+
+
+/* =====================================================
+   LANGUAGE SWITCHER
+===================================================== */
+
+const language =
+    document.getElementById("language");
+
+
+const translations = {
+
+    en: {
+
+        heroTitle:
+            "Speak Freely. Connect Safely.",
+
+        heroText:
+            "An anonymous multilingual platform where people can talk, listen and connect without fear of judgment."
+
+    },
+
+    te: {
+
+        heroTitle:
+            "స్వేచ్ఛగా మాట్లాడండి. సురక్షితంగా కనెక్ట్ అవ్వండి.",
+
+        heroText:
+            "తీర్పు భయం లేకుండా మాట్లాడటానికి మరియు ఇతరులతో కనెక్ట్ అవ్వడానికి సురక్షితమైన అనామక బహుభాషా వేదిక."
+
+    },
+
+    hi: {
+
+        heroTitle:
+            "खुलकर बात करें। सुरक्षित रूप से जुड़ें।",
+
+        heroText:
+            "बिना किसी डर के बात करने और दूसरों से जुड़ने के लिए एक सुरक्षित और गुमनाम बहुभाषी मंच।"
+
+    },
+
+    ta: {
+
+        heroTitle:
+            "சுதந்திரமாக பேசுங்கள். பாதுகாப்பாக இணைந்திருங்கள்.",
+
+        heroText:
+            "தீர்ப்பின் பயமின்றி பேசவும் மற்றவர்களுடன் இணைந்திருக்கவும் உதவும் பாதுகாப்பான அநாமதேய பல்மொழி தளம்."
+
+    }
+
+};
+
+
+language.addEventListener(
+    "change",
+    event => {
+
+        const selected =
+            translations[event.target.value];
+
+        document.getElementById(
+            "heroTitle"
+        ).textContent =
+            selected.heroTitle;
+
+        document.getElementById(
+            "heroText"
+        ).textContent =
+            selected.heroText;
+
+    }
+);
+
+</script>
+
+</body>
+</html>
